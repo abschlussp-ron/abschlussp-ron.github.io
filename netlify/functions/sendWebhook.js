@@ -1,28 +1,40 @@
-export default async (req) => {
+export const handler = async (event) => {
   try {
-    const data = await req.json();
+    const body = JSON.parse(event.body);
 
     const webhookURL = process.env.DISCORD_WEBHOOK_URL;
 
-    const payload = {
-      content: data.content || "Neue Nachricht!"
-    };
-
-    const res = await fetch(webhookURL, {
+    const response = await fetch(webhookURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        content: body.content || "Neue Nachricht!"
+      })
     });
 
-    if (!res.ok) {
-      return new Response("Discord error", { status: 500 });
+    if (!response.ok) {
+      const text = await response.text();
+      console.log("Discord error:", text);
+
+      return {
+        statusCode: 500,
+        body: "Discord failed"
+      };
     }
 
-    return new Response("OK", { status: 200 });
+    return {
+      statusCode: 200,
+      body: "OK"
+    };
 
   } catch (err) {
-    return new Response("Server error", { status: 500 });
+    console.log(err);
+
+    return {
+      statusCode: 500,
+      body: "Server error"
+    };
   }
 };
