@@ -1,41 +1,36 @@
-import formidable from "formidable";
-import fs from "fs";
-
-export const config = {
-    api: {
-        bodyParser: false
-    }
-};
-
 export const handler = async (event) => {
-    const form = new formidable.IncomingForm();
 
-    return new Promise((resolve) => {
-        form.parse(event, async (err, fields, files) => {
+    if (event.httpMethod !== "POST") {
+        return { statusCode: 405, body: "Method Not Allowed" };
+    }
 
-            const file = files.file;
-            const content = fields.content || "File Upload";
+    try {
+        const webhookURL = process.env.DISCORD_WEBHOOK_URL;
 
-            const formData = new FormData();
-            formData.append("content", content);
+        // ⚠️ kein File-Parsing hier (nur Text)
+        const content = JSON.parse(event.body).content;
 
-            if (file) {
-                formData.append(
-                    "file",
-                    fs.createReadStream(file.filepath),
-                    file.originalFilename
-                );
-            }
-
-            const response = await fetch(process.env.DISCORD_WEBHOOK_URL, {
-                method: "POST",
-                body: formData
-            });
-
-            resolve({
-                statusCode: response.ok ? 200 : 500,
-                body: response.ok ? "OK" : "Discord error"
-            });
+        const response = await fetch(webhookURL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                content: content || "Neue Nachricht!"
+            })
         });
-    });
+
+        return {
+            statusCode: response.ok ? 200 : 500,
+            body: response.ok ? "OK" : "Discord error"
+        };
+
+    } catch (err) {
+        console.log(err);
+
+        return {
+            statusCode: 500,
+            body: "Server error"
+        };
+    }
 };
