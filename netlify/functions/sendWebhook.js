@@ -1,37 +1,34 @@
-export const handler = async (event) => {
-    if (event.httpMethod !== "POST") {
-        return {
-            statusCode: 405,
-            body: "Method Not Allowed"
-        };
+document.getElementById("sendButton").addEventListener("click", async () => {
+
+    const fileInput = document.getElementById("fileInput");
+
+    if (fileInput && fileInput.files.length > 0) {
+        console.log("File selected (currently not sent in this version)");
     }
 
     try {
-        const body = JSON.parse(event.body);
-
-        const webhookURL = process.env.DISCORD_WEBHOOK_URL;
-
-        await fetch(webhookURL, {
+        const res = await fetch("/.netlify/functions/sendWebhook", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                content: body.content || "Test"
+                content: "Neue Leaderboard Anfrage!"
             })
         });
 
-        return {
-            statusCode: 200,
-            body: "OK"
-        };
+        const text = await res.text();
+        console.log("STATUS:", res.status);
+        console.log("RESPONSE:", text);
 
-    } catch (err) {
-        console.log(err);
+        if (res.ok) {
+            alert("Sent successfully!");
+        } else {
+            alert("Fehler beim Senden!");
+        }
 
-        return {
-            statusCode: 500,
-            body: "Error"
-        };
+    } catch (error) {
+        console.error("ERROR:", error);
+        alert("Fehler!");
     }
-};
+});
