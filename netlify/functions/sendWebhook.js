@@ -1,6 +1,5 @@
 export const handler = async (event) => {
 
-    // Nur POST erlauben
     if (event.httpMethod !== "POST") {
         return {
             statusCode: 405,
@@ -9,25 +8,32 @@ export const handler = async (event) => {
     }
 
     try {
-        // Daten aus dem Frontend lesen
-        const body = JSON.parse(event.body);
+        const body = JSON.parse(event.body || "{}");
+
+        console.log("Received body:", body);
 
         const webhookURL = process.env.DISCORD_WEBHOOK_URL;
 
-        // Nachricht an Discord senden
+        if (!body.content) {
+            return {
+                statusCode: 400,
+                body: "No content provided"
+            };
+        }
+
         const response = await fetch(webhookURL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                content: body.content || "Neue Nachricht!"
+                content: body.content
             })
         });
 
         if (!response.ok) {
             const text = await response.text();
-            console.log("Discord Error:", text);
+            console.log("Discord error:", text);
 
             return {
                 statusCode: 500,
@@ -41,7 +47,7 @@ export const handler = async (event) => {
         };
 
     } catch (err) {
-        console.log("Server Error:", err);
+        console.log("Error:", err);
 
         return {
             statusCode: 500,
