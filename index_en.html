@@ -65,27 +65,35 @@
         </footer>
 
             <script>
-            document.getElementById("sendButton").addEventListener("click", async () => {
+           document.getElementById("sendButton").addEventListener("click", async () => {
 
     const fileInput = document.getElementById("fileInput");
-
-    let content = "Neue Leaderboard Anfrage!";
-
-    // optional: wenn du später input hast
     const textInput = document.getElementById("textInput");
-    if (textInput && textInput.value.trim() !== "") {
-        content = textInput.value;
+
+    if (!fileInput || fileInput.files.length === 0) {
+        alert("Please add the Screenshot");
+        return;
     }
+
+    const file = fileInput.files[0];
+
+    const formData = new FormData();
+
+    // Datei senden
+    formData.append("file", file);
+
+    // Text senden (optional)
+    formData.append(
+        "content",
+        textInput && textInput.value.trim() !== ""
+            ? textInput.value
+            : "Neue Leaderboard Anfrage!"
+    );
 
     try {
         const res = await fetch("/.netlify/functions/sendWebhook", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                content: content
-            })
+            body: formData
         });
 
         const text = await res.text();
@@ -94,14 +102,14 @@
         console.log("RESPONSE:", text);
 
         if (res.ok) {
-            alert("Sent!");
+            alert("Sent successfully!");
         } else {
-            alert("Fehler beim Senden!");
+            alert("Error while sending!");
         }
 
-    } catch (err) {
-        console.error(err);
-        alert("Fehler!");
+    } catch (error) {
+        console.error("ERROR:", error);
+        alert("Error!");
     }
 });
         </script>
