@@ -65,46 +65,42 @@
         </footer>
 
             <script>
-            const webhookURL = "https://discord.com/api/webhooks/1509154897138942074/H11dLJ772gl0f4_Fn1Qau5mX6yX7lmbXrpzMl4IfOWujRbx6Tl_j6tTBy6KDdnOG2ZgC";
+            document.getElementById("sendButton").addEventListener("click", async () => {
+    const fileInput = document.getElementById("fileInput");
 
-            document
-            .getElementById("sendButton")
-            .addEventListener("click", async () => {
+    if (fileInput.files.length === 0) {
+        alert("Bitte Datei auswählen!");
+        return;
+    }
 
-                const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
 
-                if(fileInput.files.length === 0){
-                    alert("Bitte Datei auswählen!");
-                    return;
-                }
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("content", "Neue Leaderboard Anfrage!");
 
-                const file = fileInput.files[0];
+    try {
+        const res = await fetch("/.netlify/functions/sendWebhook", {
+            method: "POST",
+            body: JSON.stringify({
+                content: "Neue Leaderboard Anfrage!"
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-                const formData = new FormData();
+        if (res.ok) {
+            alert("Sent successfully!");
+        } else {
+            alert("Fehler beim Senden!");
+        }
 
-                formData.append("file", file);
-
-                formData.append(
-                    "content",
-                    "Neue Leaderboard Anfrage!"
-                );
-
-                try{
-
-                    await fetch(webhookURL, {
-                        method: "POST",
-                        body: formData
-                    });
-
-                    alert("Sent successfully!");
-
-                }catch(error){
-
-                    console.error(error);
-
-                    alert("Fehler!");
-                }
-            });
+    } catch (error) {
+        console.error(error);
+        alert("Fehler!");
+    }
+});
         </script>
     </body>
 </html>
