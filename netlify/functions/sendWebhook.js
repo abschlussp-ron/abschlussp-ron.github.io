@@ -1,36 +1,23 @@
 export const handler = async (event) => {
 
-    if (event.httpMethod !== "POST") {
-        return { statusCode: 405, body: "Method Not Allowed" };
-    }
+    const webhookURL = process.env.DISCORD_WEBHOOK_URL;
 
-    try {
-        const webhookURL = process.env.DISCORD_WEBHOOK_URL;
+    // FormData kommt als base64 / raw string → NICHT JSON.parse!
 
-        // ⚠️ kein File-Parsing hier (nur Text)
-        const content = JSON.parse(event.body).content;
+    const content = event.body; // nur als test
 
-        const response = await fetch(webhookURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                content: content || "Neue Nachricht!"
-            })
-        });
+    const response = await fetch(webhookURL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            content: "File Upload received (debug)"
+        })
+    });
 
-        return {
-            statusCode: response.ok ? 200 : 500,
-            body: response.ok ? "OK" : "Discord error"
-        };
-
-    } catch (err) {
-        console.log(err);
-
-        return {
-            statusCode: 500,
-            body: "Server error"
-        };
-    }
+    return {
+        statusCode: 200,
+        body: "OK"
+    };
 };
