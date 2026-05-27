@@ -66,13 +66,26 @@
 
             <script>
             document.getElementById("sendButton").addEventListener("click", async () => {
-    console.log("CLICK OK");
+
+    const fileInput = document.getElementById("fileInput");
+
+    let content = "Neue Leaderboard Anfrage!";
+
+    // optional: wenn du später input hast
+    const textInput = document.getElementById("textInput");
+    if (textInput && textInput.value.trim() !== "") {
+        content = textInput.value;
+    }
 
     try {
         const res = await fetch("/.netlify/functions/sendWebhook", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: "test" })
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                content: content
+            })
         });
 
         const text = await res.text();
@@ -80,8 +93,15 @@
         console.log("STATUS:", res.status);
         console.log("RESPONSE:", text);
 
-    } catch (e) {
-        console.error("FETCH ERROR:", e);
+        if (res.ok) {
+            alert("Sent!");
+        } else {
+            alert("Fehler beim Senden!");
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Fehler!");
     }
 });
         </script>
