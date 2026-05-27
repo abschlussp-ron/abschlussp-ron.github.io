@@ -66,41 +66,44 @@
 
             <script>
             document.getElementById("sendButton").addEventListener("click", async () => {
-            const fileInput = document.getElementById("fileInput");
 
-            if (fileInput.files.length === 0) {
-                alert("Bitte Datei auswählen!");
-                return;
-            }
+    const fileInput = document.getElementById("fileInput");
 
-            const file = fileInput.files[0];
+    let content = "Neue Leaderboard Anfrage!";
 
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("content", "Neue Leaderboard Anfrage!");
+    // optional: wenn du später input hast
+    const textInput = document.getElementById("textInput");
+    if (textInput && textInput.value.trim() !== "") {
+        content = textInput.value;
+    }
 
-            try {
-                const res = await fetch("/.netlify/functions/sendWebhook", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        content: "Neue Leaderboard Anfrage!"
-                    }),
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                });
-
-                if (res.ok) {
-                    alert("Sent successfully!");
-                } else {
-                    alert("Fehler beim Senden!");
-                }
-
-            } catch (error) {
-                console.error(error);
-                alert("Fehler!");
-            }
+    try {
+        const res = await fetch("/.netlify/functions/sendWebhook", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                content: content
+            })
         });
+
+        const text = await res.text();
+
+        console.log("STATUS:", res.status);
+        console.log("RESPONSE:", text);
+
+        if (res.ok) {
+            alert("Sent!");
+        } else {
+            alert("Fehler beim Senden!");
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Fehler!");
+    }
+});
         </script>
     </body>
 </html>
