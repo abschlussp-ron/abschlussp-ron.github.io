@@ -65,53 +65,27 @@
         </footer>
 
             <script>
-            document.getElementById("sendButton").addEventListener("click", async () => {
+            const file = fileInput.files[0];
 
-    const fileInput = document.getElementById("fileInput");
-    const textInput = document.getElementById("textInput");
+const reader = new FileReader();
 
-    if (!fileInput || fileInput.files.length === 0) {
-        alert("Bitte Datei auswählen!");
-        return;
-    }
+reader.onload = async () => {
+    const base64 = reader.result.split(",")[1];
 
-    const file = fileInput.files[0];
+    await fetch("/.netlify/functions/sendWebhook", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            file: base64,
+            filename: file.name,
+            content: "Leaderboard submission"
+        })
+    });
+};
 
-    const formData = new FormData();
-
-    // Datei senden
-    formData.append("file", file);
-
-    // Text senden (optional)
-    formData.append(
-        "content",
-        textInput && textInput.value.trim() !== ""
-            ? textInput.value
-            : "Neue Leaderboard Anfrage!"
-    );
-
-    try {
-        const res = await fetch("/.netlify/functions/sendWebhook", {
-            method: "POST",
-            body: formData
-        });
-
-        const text = await res.text();
-
-        console.log("STATUS:", res.status);
-        console.log("RESPONSE:", text);
-
-        if (res.ok) {
-            alert("Erfolgreich gesendet!");
-        } else {
-            alert("Fehler beim Senden!");
-        }
-
-    } catch (error) {
-        console.error("ERROR:", error);
-        alert("Fehler!");
-    }
-});
+reader.readAsDataURL(file);
         </script>
     </body>
 </html>
