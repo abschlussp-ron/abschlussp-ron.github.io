@@ -1,19 +1,18 @@
 export const handler = async (event) => {
-
     const webhookURL = process.env.DISCORD_WEBHOOK_URL;
 
-    // FormData kommt als base64 / raw string → NICHT JSON.parse!
+    const body = JSON.parse(event.body);
 
-    const content = event.body; // nur als test
+    const buffer = Buffer.from(body.file, "base64");
 
-    const response = await fetch(webhookURL, {
+    const formData = new FormData();
+
+    formData.append("content", body.content || "New submission");
+    formData.append("file", new Blob([buffer]), body.filename || "image.png");
+
+    await fetch(webhookURL, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            content: "File Upload received (debug)"
-        })
+        body: formData
     });
 
     return {
