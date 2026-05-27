@@ -1,57 +1,41 @@
+import formidable from "formidable";
+import fs from "fs";
+
+export const config = {
+    api: {
+        bodyParser: false
+    }
+};
+
 export const handler = async (event) => {
+    const form = new formidable.IncomingForm();
 
-    if (event.httpMethod !== "POST") {
-        return {
-            statusCode: 405,
-            body: "Method Not Allowed"
-        };
-    }
+    return new Promise((resolve) => {
+        form.parse(event, async (err, fields, files) => {
 
-    try {
-        const body = JSON.parse(event.body || "{}");
+            const file = files.file;
+            const content = fields.content || "File Upload";
 
-        console.log("Received body:", body);
+            const formData = new FormData();
+            formData.append("content", content);
 
-        const webhookURL = process.env.DISCORD_WEBHOOK_URL;
+            if (file) {
+                formData.append(
+                    "file",
+                    fs.createReadStream(file.filepath),
+                    file.originalFilename
+                );
+            }
 
-        if (!body.content) {
-            return {
-                statusCode: 400,
-                body: "No content provided"
-            };
-        }
+            const response = await fetch(process.env.DISCORD_WEBHOOK_URL, {
+                method: "POST",
+                body: formData
+            });
 
-        const response = await fetch(webhookURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                content: body.content
-            })
+            resolve({
+                statusCode: response.ok ? 200 : 500,
+                body: response.ok ? "OK" : "Discord error"
+            });
         });
-
-        if (!response.ok) {
-            const text = await response.text();
-            console.log("Discord error:", text);
-
-            return {
-                statusCode: 500,
-                body: "Discord failed"
-            };
-        }
-
-        return {
-            statusCode: 200,
-            body: "OK"
-        };
-
-    } catch (err) {
-        console.log("Error:", err);
-
-        return {
-            statusCode: 500,
-            body: "Server error"
-        };
-    }
+    });
 };
