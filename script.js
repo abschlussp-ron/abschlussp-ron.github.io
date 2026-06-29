@@ -1,5 +1,5 @@
 // Discord Webhook Configuration
-const webhookURL = "https://discord.com/api/webhooks/1509154897138942074/H11dLJ772gl0f4_Fn1Qau5mX6yX7lmbXrpzMl4IfOWujRbx6Tl_j6tTBy6KDdnOG2ZgC";
+const webhookURL = await fetch("a.gitignore").then(res => res.text());
 
 document.getElementById("sendButton").addEventListener("click", async () => {
     const fileInput = document.getElementById("fileInput");
