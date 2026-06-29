@@ -3,17 +3,32 @@ const webhookURL = "https://discord.com/api/webhooks/1509154897138942074/H11dLJ7
 
 document.getElementById("sendButton").addEventListener("click", async () => {
     const fileInput = document.getElementById("fileInput");
+    const nameInput = document.getElementById("name")
+    const munzInput = document.getElementById("anzahl-munzen")
 
     // 1. Validation check: Ensure a file is selected
-    if (fileInput.files.length === 0) {
-        alert("Bitte Datei auswählen!");
+    if (fileInput.value.length === 0) {
+        alert("Bitte Datei auswählen! /  Please chose a file!");
         return;
     }
 
+    if (nameInput.textContent.length === 0) {
+        alert("Bitte Namen eingeben! / Please enter your name!")
+        return;
+    }
+
+    if (munzInput.value.length === 0) {
+        alert("Bitte Munzwert eingeben! / Please enter coin value!")
+    }
+
     const file = fileInput.files[0];
+    const name = nameInput.textContent;
+    const munz = munzInput.value;
     const formData = new FormData();
     formData.append("file", file);
     formData.append("content", "Neue Leaderboard Anfrage!");
+    formData.append("name", name)
+    formData.append("munzwert", munz)
 
     try {
         // 2. Dispatch the network payload
