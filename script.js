@@ -13,7 +13,7 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         nameInput.value.trim().length === 0 &&
         munzInput.value.trim().length === 0
     ) {
-        alert("Bitte Datei auswählen, Namen eingeben und Münzwert eingeben! / Please choose a file, enter your name and coin value!");
+        alert("Bitte Datei schicken, Namen eingeben und Muenzwert eingeben! / Please choose a file, enter your name and coin value!");
         return;
     }
 
@@ -22,7 +22,7 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         fileInput.value.length === 0 &&
         nameInput.value.trim().length === 0
     ) {
-        alert("Bitte Datei auswählen und Namen eingeben! / Please choose a file and enter your name!");
+        alert("Bitte Datei schicken und Namen eingeben! / Please choose a file and enter your name!");
         return;
     }
 
@@ -31,7 +31,7 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         fileInput.value.length === 0 &&
         munzInput.value.trim().length === 0
     ) {
-        alert("Bitte Datei auswählen und Münzwert eingeben! / Please choose a file and enter coin value!");
+        alert("Bitte Datei schicken und Muenzwert eingeben! / Please choose a file and enter coin value!");
         return;
     }
     
@@ -40,13 +40,13 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         nameInput.value.trim().length === 0 &&
         munzInput.value.trim().length === 0
     ) {
-        alert("Bitte Namen und Münzwert eingeben! / Please enter your name and coin value!");
+        alert("Bitte Namen und Muenzwert eingeben! / Please enter your name and coin value!");
         return;
     }
 
     // File is missing
     if (fileInput.value.length === 0) {
-        alert("Bitte Datei auswählen! / Please choose a file!");
+        alert("Bitte Datei auswaehlen! / Please choose a file!");
         return;
     }
 
@@ -58,7 +58,7 @@ document.getElementById("sendButton").addEventListener("click", async () => {
 
     // Coin value is missing
     if (munzInput.value.trim().length === 0) {
-        alert("Bitte Münzwert eingeben! / Please enter coin value!");
+        alert("Bitte Muenzwert eingeben! / Please enter coin value!");
         return;
     }
 
@@ -70,19 +70,19 @@ document.getElementById("sendButton").addEventListener("click", async () => {
 
     // Coin value is not a number
     if (isNaN(munzInput.value)) {
-        alert("Bitte eine gültige Zahl eingeben! / Please enter a valid number!");
+        alert("Bitte eine gueltige Zahl eingeben! / Please enter a valid number!");
         return;
     }
 
     // Coin value is less than 1
     if (Number(munzInput.value) < 1) {
-        alert("Der Münzwert muss größer als 0 sein! / Coin value must be greater than 0!");
+        alert("Der Munzwert muss groesser als 0 sein! / Coin value must be greater than 0!");
         return;
     }
 
     // Coin value is too high
     if (Number(munzInput.value) > 1000000) {
-        alert("Der Münzwert ist zu hoch! / Coin value is too high!");
+        alert("Der Munzwert ist zu hoch! / Coin value is too high!");
         return;
     }    
 
@@ -91,7 +91,7 @@ document.getElementById("sendButton").addEventListener("click", async () => {
     
     // File is larger than 8 MB
     if (file && file.size > 8 * 1024 * 1024) {
-        alert("Die Datei ist größer als 8 MB! / The file is larger than 8 MB!");
+        alert("Die Datei ist groesser als 8 MB! / The file is larger than 8 MB!");
         return;
     }
 
@@ -101,7 +101,7 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         return;
     }
 
-// Only allow PNG, JPG and JPEG
+    // Only allow PNG, JPG and JPEG
     const allowedTypes = [
         "image/png",
         "image/jpeg"
@@ -111,6 +111,7 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         alert("Nur PNG oder JPG Dateien sind erlaubt! / Only PNG or JPG files are allowed!");
         return;
     }
+
     const file = fileInput.files[0];
     const name = nameInput.value;
     const munz = munzInput.value;
@@ -134,7 +135,7 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         } else {
             console.error(`Server error payload state: ${response.status}`);
             if (response.status === 413) {
-                alert("Fehler 413: Die Bilddatei ist zu groß für Discord!");
+                alert("Fehler 413: Die Bilddatei ist zu gross fuer Discord! / The File is too big for Discord!");
             } else {
                 alert(`Fehler! Server-Status: ${response.status}`);
             }
@@ -143,6 +144,6 @@ document.getElementById("sendButton").addEventListener("click", async () => {
     } catch (error) {
         // Handle physical network dropouts / CORS issues
         console.error("Network connection failure:", error);
-        alert("Netzwerkfehler beim Senden!");
+        alert("Netzwerkfehler beim Senden! / Networkfailure while sending!");
     }
 });
