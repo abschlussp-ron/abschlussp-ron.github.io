@@ -5,17 +5,19 @@ document.getElementById("sendButton").addEventListener("click", async () => {
     const fileInput = document.getElementById("fileInput");
     const nameInput = document.getElementById("name")
     const munzInput = document.getElementById("anzahl-munzen")
-    // Nothing entered
+   // Validate all inputs
+
+    // File, name and coin value are missing
     if (
         fileInput.value.length === 0 &&
         nameInput.value.trim().length === 0 &&
         munzInput.value.trim().length === 0
     ) {
-        alert("Bitte Datei, Name und Münzwert eingeben! / Please choose a file, enter your name and coin value!");
+        alert("Bitte Datei auswählen, Namen eingeben und Münzwert eingeben! / Please choose a file, enter your name and coin value!");
         return;
     }
 
-    // File and name missing
+    // File and name are missing
     if (
         fileInput.value.length === 0 &&
         nameInput.value.trim().length === 0
@@ -24,7 +26,7 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         return;
     }
 
-    // File and coin value missing
+    // File and coin value are missing
     if (
         fileInput.value.length === 0 &&
         munzInput.value.trim().length === 0
@@ -32,8 +34,8 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         alert("Bitte Datei auswählen und Münzwert eingeben! / Please choose a file and enter coin value!");
         return;
     }
-
-    // Name and coin value missing
+    
+    // Name and coin value are missing
     if (
         nameInput.value.trim().length === 0 &&
         munzInput.value.trim().length === 0
@@ -42,14 +44,21 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         return;
     }
 
-    // 1. Validation check: Ensure a file is selected
+    // File is missing
     if (fileInput.value.length === 0) {
-        alert("Bitte Datei auswählen! /  Please chose a file!");
+        alert("Bitte Datei auswählen! / Please choose a file!");
         return;
     }
 
-    if (nameInput.value.length === 0) {
+    // Name is missing
+    if (nameInput.value.trim().length === 0) {
         alert("Bitte Namen eingeben! / Please enter your name!");
+        return;
+    }
+
+    // Coin value is missing
+    if (munzInput.value.trim().length === 0) {
+        alert("Bitte Münzwert eingeben! / Please enter coin value!");
         return;
     }
 
@@ -59,26 +68,14 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         return;
     }
 
-    // Coin value is empty
-    if (munzInput.value.length === 0) {
-        alert("Bitte Münzwert eingeben! / Please enter coin value!");
-        return;
-    }
-
     // Coin value is not a number
     if (isNaN(munzInput.value)) {
         alert("Bitte eine gültige Zahl eingeben! / Please enter a valid number!");
         return;
     }
 
-    // Coin value is negative
-    if (Number(munzInput.value) < 0) {
-        alert("Der Münzwert darf nicht negativ sein! / Coin value cannot be negative!");
-        return;
-    }
-
-    // Coin value is zero
-    if (Number(munzInput.value) === 0) {
+    // Coin value is less than 1
+    if (Number(munzInput.value) < 1) {
         alert("Der Münzwert muss größer als 0 sein! / Coin value must be greater than 0!");
         return;
     }
@@ -87,28 +84,33 @@ document.getElementById("sendButton").addEventListener("click", async () => {
     if (Number(munzInput.value) > 1000000) {
         alert("Der Münzwert ist zu hoch! / Coin value is too high!");
         return;
-    }
+    }    
 
-    // File is larger than 8 MB
+    // File checks
     const file = fileInput.files[0];
-    if (file && file.size > 8 * 1024 * 1024) 
+    
+    // File is larger than 8 MB
+    if (file && file.size > 8 * 1024 * 1024) {
         alert("Die Datei ist größer als 8 MB! / The file is larger than 8 MB!");
         return;
     }
 
-    // Only allow images
+    // File is not an image
     if (file && !file.type.startsWith("image/")) {
         alert("Bitte nur Bilddateien hochladen! / Please upload only image files!");
         return;
     }
 
-    // Only allow PNG or JPG
-    const allowedTypes = ["image/png", "image/jpeg"];
+// Only allow PNG, JPG and JPEG
+    const allowedTypes = [
+        "image/png",
+        "image/jpeg"
+    ];
+
     if (file && !allowedTypes.includes(file.type)) {
-        alert("Nur PNG oder JPG sind erlaubt! / Only PNG or JPG files are allowed!");
+        alert("Nur PNG oder JPG Dateien sind erlaubt! / Only PNG or JPG files are allowed!");
         return;
     }
-
     const file = fileInput.files[0];
     const name = nameInput.value;
     const munz = munzInput.value;
