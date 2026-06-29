@@ -1,5 +1,5 @@
 // Discord Webhook Configuration
-const webhookURL = https://discord.com/api/webhooks/1520762954096578621/9vvboBcmhe5-OE0qwkPKwceQSVLqlZoffJSVwZP3glibp9J04foKcDe9JKv2Xhv6EDMY
+const webhookURL = "https://discord.com/api/webhooks/1520762954096578621/9vvboBcmhe5-OE0qwkPKwceQSVLqlZoffJSVwZP3glibp9J04foKcDe9JKv2Xhv6EDMY"
 
 document.getElementById("sendButton").addEventListener("click", async () => {
     const fileInput = document.getElementById("fileInput");
@@ -12,23 +12,25 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         return;
     }
 
-    if (nameInput.textContent.length === 0) {
-        alert("Bitte Namen eingeben! / Please enter your name!")
+    if (nameInput.value.length === 0) {
+        alert("Bitte Namen eingeben! / Please enter your name!");
         return;
     }
 
     if (munzInput.value.length === 0) {
         alert("Bitte Munzwert eingeben! / Please enter coin value!")
+        return;
     }
 
     const file = fileInput.files[0];
-    const name = nameInput.textContent;
+    const name = nameInput.value;
     const munz = munzInput.value;
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("content", "Neue Leaderboard Anfrage!");
-    formData.append("name", name)
-    formData.append("munzwert", munz)
+    formData.append(
+        "content",
+        `Neue Leaderboard Anfrage!\nName: ${name}\nMünzwert: ${munz}`
+    );
 
     try {
         // 2. Dispatch the network payload
