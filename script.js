@@ -112,11 +112,11 @@ document.getElementById("sendButton").addEventListener("click", async () => {
         return;
     }
 
-    const file = fileInput.files[0];
+    const fileb = fileInput.files[0];
     const name = nameInput.value;
     const munz = munzInput.value;
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", fileb);
     formData.append(
         "content",
         `Neue Leaderboard Anfrage!\nName: ${name}\nMünzwert: ${munz}`
